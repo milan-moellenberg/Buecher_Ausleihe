@@ -1,0 +1,13 @@
+# Python / Virtual Environment
+venv/
+__pycache__/
+*.pyc
+
+# Node.js
+node_modules/
+
+# Umgebungsvariablen & Passwörter
+.env
+
+# Datenbanken lokal
+*.db

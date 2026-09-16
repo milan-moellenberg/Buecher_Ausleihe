@@ -1,0 +1,39 @@
+PostgreSQL installieren
+	EnterpriseDB: https://www.postgresql.org/download/windows/
+	Datenbankzugriff: pgAdmin
+	DB-User anlegen (User und Password für die Anwendung): ausleihe_user / PW: XXX
+	Datenbank anlegen: ausleihe_db
+	(Schema anlegen)
+	Tabellen anlegen: ausleihe, user, ...
+
+Python (Backend):
+	Installation von Python: https://www.python.org/downloads/
+	Installation von Visual Studio Code oder JetBrains PyCharm Community
+	Einrichtung einer Venv für das Projekt (alle Python-Abhängigkeiten kommen nur in diese Venv)
+	Start: simples Skript (Auslesen der Datenbank für Test der Datenbank-Verbindung)
+	requirements.txt für Paket-Verwaltung oder Poetry
+	Integration von SQLAlchemy für das Mapping der Datenbank-Tabellen
+		TDD (Test-Driven-Development) als Vorgehen (für alles einen Unit-Test erstellen. Paket-Variante: unittest)
+		die erste Domain-Klasse mit SQLAlchemy erstellen und Unit-Test für CRUD-Operationen (Create, Read, Update, Delete)
+	Integration von Pydantic und FastAPI für Zugriff über REST
+		REST (PUT, POST, GET, DELETE)
+
+Frontend:
+	Welches Framework?
+	Installation von NodeJs: https://nodejs.org/en/download
+	Framework auswählen: Angular mit Angular Material, React, Vue.js
+	
+
+Am Ende Deployment auf Linux
+	Linux auswählen: RedHat-Derivat (Rocky-Linux), Ubuntu
+	Linux in Virtual Box installieren
+	Im Linux installieren:
+		Git
+		PostgreSQL
+		Python
+		NodeJs
+	Das Projekt mit Git in das Linux-System git clonen
+	Zwischendurch Linux-Pakete installieren (z.B. Nginx )
+	Zum Laufen bringen
+	Krönung: Das Ganze mit einem Ansible Playbook machen
+	
