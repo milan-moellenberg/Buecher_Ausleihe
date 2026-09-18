@@ -8,6 +8,8 @@ node_modules/
 
 # Umgebungsvariablen & Passwörter
 .env
-
+SENSIBEL.txt
 # Datenbanken lokal
 *.db
+
+Ausleihe_roadmap.txt

@@ -1,0 +1,22 @@
+- git eingerichtet
+- PostgreSQL Version 18.6 lokal installiert, über pgAdmin 4 ausleihe_db für ausleihe_user erstellt
+- Python 3.14.7 lokal installiert mit pip 26.2.1
+- Visual Studio Code 1.138.0 lokal installiert (Erweiterungen Python, Pylance, Markdown All in One)
+- .env für 
+- venv eingerichtet (WinPowershell: Set-ExecutionPolicy RemoteSigned benötigt)
+  - python -m venv venv
+  - .\venv\Scripts\Activate.ps1
+  - pip install -r requirements.txt
+    - fastapi
+    - uvicorn[standard]
+    - sqlalchemy
+    - psycopg2-binary
+    - python-dotenv
+    - pydantic
+    - pytest
+- test_db.py um die Datenbankanbindung zu testen
+- database.py (für den Datenbank-Connect & die Session-Verwaltung)
+- models.py (für die Tabellen-Klassen)
+- init_db.py (um die Datenbank zu initialisieren)
+- crud.py und test_crud.py erstellt und mit ersten methoden gefüllt
+- 

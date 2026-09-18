@@ -1,31 +1,31 @@
 # Projekt-Roadmap: Schul-Ausleihsystem
 
 ## 1. Projekt-Setup & Infrastruktur (Lokal)
-- [ ] **Git & Repository Setup**
-  - [ ] Git-Repository lokal initialisieren und auf GitHub pushen
-  - [ ] `.gitignore` einrichten (Ausschluss von `venv/`, `node_modules/`, `.env`, DB-Anmeldedaten)
-  - [ ] Doku-Dateien anlegen (`README.md`, `ROADMAP.md`, `PROTOKOLL.md`)
+- [x] **Git & Repository Setup**
+  - [x] Git-Repository lokal initialisieren und auf GitHub pushen
+  - [x] `.gitignore` einrichten (Ausschluss von `venv/`, `node_modules/`, `.env`, DB-Anmeldedaten)
+  - [x] Doku-Dateien anlegen (`README.md`, `ROADMAP.md`, `PROTOKOLL.md`)
 - [ ] **PostgreSQL Installation & Datenbank-Setup**
-  - [ ] PostgreSQL installieren (EnterpriseDB)
-  - [ ] Datenbankzugriff über pgAdmin testen
-  - [ ] DB-User `ausleihe_user` mit sicherem Passwort anlegen
-  - [ ] Datenbank `ausleihe_db` anlegen
+  - [x] PostgreSQL installieren (18.6)
+  - [x] Datenbankzugriff über pgAdmin 4 testen
+  - [x] DB-User `ausleihe_user` mit sicherem Passwort anlegen
+  - [x] Datenbank `ausleihe_db` anlegen
 
 ---
 
 ## 2. Python Backend (FastAPI & SQLAlchemy)
-- [ ] **Umgebung & Grundkonfiguration**
-  - [ ] Python installieren & IDE (VS Code / PyCharm) einrichten
-  - [ ] Virtual Environment (`venv`) erstellen und aktivieren
-  - [ ] Paketverwaltung einrichten (`requirements.txt` oder Poetry)
-  - [ ] Umgebungs-Variablen via `.env` einbinden (DB-Credentials, Secret Keys)
-  - [ ] Simples Testskript für PostgreSQL-Verbindungsaufbau ausführen
-- [ ] **Datenbankmodellierung (SQLAlchemy ORM)**
-  - [ ] Entity `User` (Lehrer: ID, Name/Kürzel, Rolle)
-  - [ ] Entity `Kiste` (Bücherkiste: ID, QR-Code-Schlüssel, Name/Inhalt, Status)
-  - [ ] Entity `Ausleihe` (Historie: ID, Kiste_ID, User_ID, Klasse, Ausleihdatum, Rückgabedatum, Rückgeber_User_ID)
+- [x] **Umgebung & Grundkonfiguration**
+  - [x] Python installieren & IDE (VS Code) einrichten
+  - [x] Virtual Environment (`venv`) erstellen und aktivieren
+  - [x] Paketverwaltung einrichten (`requirements.txt` )
+  - [x] Umgebungs-Variablen via `.env` einbinden (DB-Credentials, Secret Keys)
+  - [x] Simples Testskript für PostgreSQL-Verbindungsaufbau ausführen
+- [x] **Datenbankmodellierung (SQLAlchemy ORM)**
+  - [x] Entity `User` (Lehrer: ID, Name/Kürzel, Rolle)
+  - [x] Entity `Kiste` (Bücherkiste: ID, QR-Code-Schlüssel, Name/Inhalt, Status)
+  - [x] Entity `Ausleihe` (Historie: ID, Kiste_ID, User_ID, Klasse, Ausleihdatum, Rückgabedatum, Rückgeber_User_ID)
 - [ ] **Test-Driven Development (TDD) Setup**
-  - [ ] Test-Framework (z. B. `pytest` oder `unittest`) einrichten
+  - [ ] Test-Framework ( `unittest`) einrichten
   - [ ] Unit-Tests für DB-Zugriffe und CRUD-Operationen (Create, Read, Update, Delete) schreiben
 - [ ] **QR-Code Generator Modul**
   - [ ] Python-Skript/Utility zur automatischen Generierung von QR-Code-Grafiken (PNG) für Kisten-IDs erstellen

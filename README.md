@@ -5,13 +5,15 @@ Ein digitales Verwaltungssystem zur einfachen Ausleihe und Rückgabe von Bücher
 ---
 
 ## Inhaltsverzeichnis
-- [Über das Projekt](#-über-das-projekt)
-- [Tech-Stack](#-tech-stack)
-- [Kernfunktionen](#-kernfunktionen)
-- [Architektur & Ausleih-Workflow](#-architektur--ausleih-workflow)
-- [Installation & Lokales Setup](#-installation--lokales-setup)
-- [Deployment](#-deployment)
-- [Projekt-Dokumentation](#-projekt-dokumentation)
+- [Schul-Ausleihsystem für Bücherkisten](#schul-ausleihsystem-für-bücherkisten)
+  - [Inhaltsverzeichnis](#inhaltsverzeichnis)
+  - [Über das Projekt](#über-das-projekt)
+  - [Tech-Stack](#tech-stack)
+    - [**Backend**](#backend)
+    - [**Frontend**](#frontend)
+    - [**Infrastruktur \& DevOps**](#infrastruktur--devops)
+  - [Kernfunktionen](#kernfunktionen)
+  - [Ausleih-Workflow](#ausleih-workflow)
 
 ---
 
@@ -28,7 +30,7 @@ In Schulen werden Klassensätze von Büchern in physischen Kisten aufbewahrt. Di
 ## Tech-Stack
 
 ### **Backend**
-* **Programmiersprache:** Python 3.11+
+* **Programmiersprache:** Python 3.14+
 * **Framework:** FastAPI (REST-API)
 * **ORM & Datenbank:** SQLAlchemy mit PostgreSQL
 * **Validierung & Datenmodelle:** Pydantic
