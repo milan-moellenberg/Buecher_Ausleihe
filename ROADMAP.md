@@ -24,29 +24,29 @@
   - [x] Entity `User` (Lehrer: ID, Name/Kürzel, Rolle)
   - [x] Entity `Kiste` (Bücherkiste: ID, QR-Code-Schlüssel, Name/Inhalt, Status)
   - [x] Entity `Ausleihe` (Historie: ID, Kiste_ID, User_ID, Klasse, Ausleihdatum, Rückgabedatum, Rückgeber_User_ID)
-- [ ] **Test-Driven Development (TDD) Setup**
-  - [ ] Test-Framework ( `unittest`) einrichten
-  - [ ] Unit-Tests für DB-Zugriffe und CRUD-Operationen (Create, Read, Update, Delete) schreiben
-- [ ] **QR-Code Generator Modul**
-  - [ ] Python-Skript/Utility zur automatischen Generierung von QR-Code-Grafiken (PNG) für Kisten-IDs erstellen
-  - [ ] Export der QR-Codes in lokalen Ordner / Download-Funktion
-- [ ] **REST-API Entwicklung (FastAPI & Pydantic)**
-  - [ ] Pydantic Schemas für Request/Response-Validierung definieren
-  - [ ] Authentication- & Berechtigungskonzept umsetzen (Schul-Passwort für Ausleihe, Admin-Passwort für Admin-Bereich)
-  - [ ] REST-Endpunkte erstellen:
-    - [ ] `GET /kisten` / `GET /kisten/{id}` (Details & Status abfragen)
-    - [ ] `POST /ausleihe` (Kiste an Lehrer/Klasse ausleihen)
-    - [ ] `POST /rueckgabe` (Kiste zurückbringen inkl. Erfassung des Rückgebers)
-    - [ ] `GET /lehrer` & `POST /lehrer` (Lehrerliste & Registrierung neuer Lehrer)
-    - [ ] `GET /admin/historie` & Admin-Management (CRUD für Kisten)
+- [x] **Test-Driven Development (TDD) Setup**
+  - [x] Test-Framework ( `unittest`) einrichten
+  - [x] erste Unit-Tests für DB-Zugriffe und CRUD-Operationen (Create, Read, Update, Delete) schreiben
+- [x] **QR-Code Generator Modul**
+  - [x] Python-Skript/Utility zur automatischen Generierung von QR-Code-Grafiken (PNG) für Kisten-IDs erstellen
+  - [x] Export der QR-Codes in lokalen Ordner / vorbereitung für Download-Funktion
+- [x] **REST-API Entwicklung (FastAPI & Pydantic)**
+  - [x] Pydantic Schemas für Request/Response-Validierung definieren
+  - [x] Authentication- & Berechtigungskonzept umsetzen (Schul-Passwort für Ausleihe, Admin-Passwort für Admin-Bereich)
+  - [x] REST-Endpunkte erstellen:
+    - [x] `GET /kisten` / `GET /kisten/{id}` (Details & Status abfragen)
+    - [x] `POST /ausleihe` (Kiste an Lehrer/Klasse ausleihen)
+    - [x] `POST /rueckgabe` (Kiste zurückbringen inkl. Erfassung des Rückgebers)
+    - [x] `GET /lehrer` & `POST /lehrer` (Lehrerliste & Registrierung neuer Lehrer)
+    - [x] `GET /admin/historie` & Admin-Management (CRUD für Kisten)
 
 ---
 
 ## 3. Frontend-Entwicklung (Web App)
 - [ ] **Setup & Framework-Auswahl**
-  - [ ] Node.js installieren
-  - [ ] Frontend-Framework aufsetzen (z. B. Angular Material, React oder Vue.js)
-  - [ ] API-Client / Axios für Kommunikation mit dem FastAPI-Backend einrichten
+  - [x] Node.js installieren
+  - [x] Frontend-Framework aufsetzen (z. B. Angular Material, React oder Vue.js) entschieden für Vue.js
+  - [x] API-Client / Axios für Kommunikation mit dem FastAPI-Backend einrichten
 - [ ] **Benutzeroberfläche für Lehrer (QR-Code Zielseite)**
   - [ ] Login / Passwortabfrage (Schul-Passwort)
   - [ ] Dynamische Scan-Ansicht (`/scan/{kisten_id}`):

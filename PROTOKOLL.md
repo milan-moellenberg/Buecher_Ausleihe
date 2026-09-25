@@ -1,8 +1,8 @@
 - git eingerichtet
 - PostgreSQL Version 18.6 lokal installiert, über pgAdmin 4 ausleihe_db für ausleihe_user erstellt
 - Python 3.14.7 lokal installiert mit pip 26.2.1
-- Visual Studio Code 1.138.0 lokal installiert (Erweiterungen Python, Pylance, Markdown All in One)
-- .env für 
+- Visual Studio Code 1.138.0 lokal installiert (Erweiterungen Python, Pylance, Markdown All in One), mit github synchronisiert
+- .env für sensible Daten angelegt
 - venv eingerichtet (WinPowershell: Set-ExecutionPolicy RemoteSigned benötigt)
   - python -m venv venv
   - .\venv\Scripts\Activate.ps1
@@ -18,5 +18,26 @@
 - database.py (für den Datenbank-Connect & die Session-Verwaltung)
 - models.py (für die Tabellen-Klassen)
 - init_db.py (um die Datenbank zu initialisieren)
-- crud.py und test_crud.py erstellt und mit ersten methoden gefüllt
-- 
+- crud.py und test_crud.py erstellt und mit ersten methoden gefüllt für die db. Zugriffe
+- qr_generator erstellt
+- schemas.py für pydantic (Datentypen verifizieren...)
+- .env mit Lehrer und Schulpasswort erstellt
+- main.py für die REST Endpunkte.  FastAPI, Validierungen/Fehlermeldungen mit Pydantic und Zugriff auf SQLAlchemy über crud.py läuft hier zusammen
+- uvicorn als Webserver: 
+  - pip install uvicorn
+  - BACKEND: uvicorn main:app --reload
+- Swagger Dokumentation im browser unter http://127.0.0.1:8000/docs oder http://localhost:8000/docs
+- lokal installiert: node.js v24.21.0
+- Vue.js als Framework für das frontend gewählt: 
+  - npm create vite@latest frontend -- --template vue
+  - http://localhost:5173/ ist die lokale Adresse
+  - FRONTEND: npm run dev
+  - für später: npm run dev -- --host um im wlan freizugeben
+- Axios nutzen um Frontend die Kommunikation mit FastAPI- backend zu ermöglichen
+  - npm install axios 
+  - frontend/src/api.js um server-Url nicht überall zu wiederholen
+  - main.py in Backend für CORS erweitern (wegen verschiedener ports backend/frontend)
+  - vue extension für vs code installiert
+- UI-Bibliothek für die Frontend: primevue
+  - npm install primevue @primevue/themes primeicons
+  - npm install html5-qrcode (für den codescanner)

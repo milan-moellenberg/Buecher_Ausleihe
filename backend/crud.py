@@ -53,19 +53,14 @@ def get_all_kisten(db: Session):
 
 
 # Crud operations for the Ausleihe model
+def get_all_ausleihen(db: Session):
+    return db.query(models.Ausleihe).all() 
 
-def ausleihen_kiste(db: Session, user_short_name: str, kiste_qr_code_id: str):
-    user = get_user_by_short_name(db, user_short_name)
-    if not user:
-        return None  # User not found
 
-    kiste = get_kiste_by_qr_code(db, kiste_qr_code_id)
-    if not kiste:
-        return None  # Kiste not found
-
+def ausleihen_kiste(db: Session, user_id: int, kiste_id: int):
     new_ausleihe = models.Ausleihe(
-        ausleih_user_id=user.id,
-        kiste_id=kiste.id,
+        ausleih_user_id=user_id,
+        kiste_id=kiste_id,
         status=models.AusleihStatus.AUSGELIEHEN
     )
     db.add(new_ausleihe)
@@ -73,28 +68,26 @@ def ausleihen_kiste(db: Session, user_short_name: str, kiste_qr_code_id: str):
     db.refresh(new_ausleihe)
     return new_ausleihe
 
-def rueckgabe_kiste_by_qr_code(db: Session,  rueckgabe_user_short_name: str, kiste_qr_code_id: str):
+def get_active_ausleihe_by_qr_code(db: Session, kiste_qr_code_id: str):
     kiste = get_kiste_by_qr_code(db, kiste_qr_code_id)
     if not kiste:
         return None  # Kiste not found
 
-    ausleihe = db.query(models.Ausleihe).filter(
+    return db.query(models.Ausleihe).filter(
         models.Ausleihe.kiste_id == kiste.id,
         models.Ausleihe.status == models.AusleihStatus.AUSGELIEHEN
     ).first()
 
-    if not ausleihe:
-        return None  # No active loan found for this Kiste
-
-    rueckgabe_user = get_user_by_short_name(db, rueckgabe_user_short_name)
-    if not rueckgabe_user:
-        return None  # Rückgabe user not found
-
+def mark_as_returned(db: Session, ausleihe:models.Ausleihe, rueckgabe_user_id: int):
     ausleihe.status = models.AusleihStatus.ZURUECKGEGEBEN
     ausleihe.rueckgabe_datum = func.now()
-    ausleihe.rueckgabe_user_id = rueckgabe_user.id
+    ausleihe.rueckgabe_user_id = rueckgabe_user_id
 
     db.commit()
     db.refresh(ausleihe)
     return ausleihe
+
+
+
+    
 

@@ -64,12 +64,13 @@ class TestCRUDFunctions(unittest.TestCase):
         user = crud.create_user(self.db, short_name="testuser2", rolle="Lehrkraft")
         kiste = crud.create_kiste(self.db, qr_code_id="QR456", titel="Test Kiste 2")
 
-        ausleihe = crud.ausleihen_kiste(self.db, user.short_name, kiste.qr_code_id)
+        ausleihe = crud.ausleihen_kiste(self.db, user.id, kiste.id)
         self.assertIsNotNone(ausleihe)
         self.assertEqual(ausleihe.ausleih_user_id, user.id)
         self.assertEqual(ausleihe.status, models.AusleihStatus.AUSGELIEHEN)
 
-        rueckgabe = crud.rueckgabe_kiste_by_qr_code(self.db, user.short_name, kiste.qr_code_id)
+        rueckgabe = crud.mark_as_returned(self.db, ausleihe, user.id)
+
         self.assertIsNotNone(rueckgabe)
         self.assertEqual(rueckgabe.status, models.AusleihStatus.ZURUECKGEGEBEN)
         self.assertIsNotNone(rueckgabe.rueckgabe_datum)
@@ -80,10 +81,14 @@ class TestCRUDFunctions(unittest.TestCase):
         user2 = crud.create_user(self.db, short_name="testuser2", rolle="Lehrkraft")
         kiste = crud.create_kiste(self.db, qr_code_id="QR789", titel="Test Kiste 3")
 
-        ausleihe = crud.ausleihen_kiste(self.db, user1.short_name, kiste.qr_code_id)
+        ausleihe = crud.ausleihen_kiste(self.db, user1.id, kiste.id)
         self.assertIsNotNone(ausleihe)
 
-        rueckgabe = crud.rueckgabe_kiste_by_qr_code(self.db, user2.short_name, kiste.qr_code_id)
+        active_ausleihe = crud.get_active_ausleihe_by_qr_code(self.db, kiste.qr_code_id)
+        self.assertIsNotNone(active_ausleihe)
+
+        rueckgabe = crud.mark_as_returned(self.db, active_ausleihe, user2.id)
+
         self.assertIsNotNone(rueckgabe)
         self.assertEqual(rueckgabe.status, models.AusleihStatus.ZURUECKGEGEBEN)
         self.assertEqual(rueckgabe.ausleih_user_id, user1.id)
