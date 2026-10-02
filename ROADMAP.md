@@ -67,10 +67,10 @@
   - [x] Systempakete aktualisieren & Basis-Tools installieren (`git`, `curl`, `build-essential`)
 - [ ] **Server-Umgebung konfigurieren**
   - [x] PostgreSQL auf Linux installieren und Datenbank importieren/konfigurieren
-  - [ ] Python & Node.js auf dem Server installieren
-  - [ ] Repository via `git clone` auf den Server holen
+  - [x] Python & Node.js auf dem Server installieren
+  - [x] Repository via `git clone` auf den Server holen
 - [ ] **Webserver & Process Management**
-  - [ ] Nginx als Reverse Proxy einrichten (Routing auf Backend & Frontend)
+  - [x] Nginx als Reverse Proxy einrichten (Routing auf Backend & Frontend)
   - [ ] Backend-Prozess als System-Dienst (Systemd) oder mit Gunicorn/Uvicorn konfigurieren
   - [ ] Anwendung lokal im Netzwerk / der VM aufrufen und durchtesten
 - [ ] **Automatisierung (Optional / Krönung)**

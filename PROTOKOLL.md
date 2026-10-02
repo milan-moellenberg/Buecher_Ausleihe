@@ -72,8 +72,28 @@
     - \q   quit postgreSQL shell
     - test mit: psql -U ausleih_user -d ausleih_db -h localhost
     - sudo apt install -y python3-venv python3-pip nodejs npm
-    - git clone <DEINE_GIT_REPOSITORY_URL>
-    - cd <DEIN_PROJEKT_ORDNERNAME>
+    - git clone DEINE_GIT_REPOSITORY_URL
+    - cd DEIN_PROJEKT_ORDNERNAME/backend
     - python3 -m venv venv
-    - source venv/bin/activate
-    - pip install -r backend/requirements.txt
+    - FALLS PYTHON PAKETE GEÄNDERT WURDEN:
+      - source venv/bin/activate 
+      - pip install -r backend/requirements.txt
+    - FALLS FRONTEND VUE DATEIEN GEÄNDERT WURDEN:
+      - npm install
+      - npm run build
+    - die .env datei erstellen im backend
+    - Nginx für reverse proxy:
+      - sudo apt install -y nginx
+      - sudo systemctl status nginx (mit q beenden)
+      - sudo rm /etc/nginx/sites-enabled/default
+      - sudo nano /etc/nginx/sites-available/ausleihe.conf   (um Konfigurationsdatei zu erstellen)
+      - sudo ln -s /etc/nginx/sites-available/ausleihe.conf /etc/nginx/sites-enabled/
+      - sudo systemctl reload nginx
+      - sudo nano /etc/systemd/system/ausleihe-backend.service   (um Service-Datei für Systemd zu erstellen)
+      - sudo systemctl daemon-reload
+      - sudo systemctl enable ausleihe-backend
+      - sudo systemctl start ausleihe-backend
+      - sudo systemctl restart ausleihe-backend (FALLS BACKEND CODE GEÄNDERT WURDE)
+      - sudo systemctl status ausleihe-backend   (Status überprüfen)
+      - sudo journalctl -u ausleihe-backend.service -f    (backend-logs in echtzeit ansehen)
+      - python init_db.py

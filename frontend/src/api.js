@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE_URL = 'http://localhost:8000'
+const API_BASE_URL = '/api' // Relativer Pfad, um den NginxProxy in der Vue-Entwicklungsumgebung zu nutzen
 
 // Axios Instanz erstellen
 const api = axios.create({
