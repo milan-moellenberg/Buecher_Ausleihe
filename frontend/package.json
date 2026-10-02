@@ -12,9 +12,9 @@
     "@primevue/themes": "^4.5.4",
     "axios": "^1.20.0",
     "html5-qrcode": "^2.3.8",
-    "primeicons": "^8.0.2",
-    "primevue": "^5.0.1",
-    "vue": "^3.5.42"
+    "primeicons": "^7.0.0",
+    "primevue": "^4.5.5",
+    "vue": "^3.5.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.8",

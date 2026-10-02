@@ -47,7 +47,6 @@ class TestCRUDFunctions(unittest.TestCase):
     def test_create_and_get_kiste(self):
         kiste = crud.create_kiste(
             self.db, 
-            qr_code_id="QR123", 
             titel="Test Kiste", 
             kategorie="Test Kategorie", 
             beschreibung="Test Beschreibung"
@@ -62,7 +61,7 @@ class TestCRUDFunctions(unittest.TestCase):
     # desired workflow: user borrows the kiste, same user returns the kiste
     def test_ausleihen_and_rueckgabe_kiste(self):
         user = crud.create_user(self.db, short_name="testuser2", rolle="Lehrkraft")
-        kiste = crud.create_kiste(self.db, qr_code_id="QR456", titel="Test Kiste 2")
+        kiste = crud.create_kiste(self.db, titel="Test Kiste 2")
 
         ausleihe = crud.ausleihen_kiste(self.db, user.id, kiste.id)
         self.assertIsNotNone(ausleihe)
@@ -79,7 +78,7 @@ class TestCRUDFunctions(unittest.TestCase):
     def test_ausleihen_and_foreign_rueckgabe_kiste(self):
         user1 = crud.create_user(self.db, short_name="testuser1", rolle="Lehrkraft")
         user2 = crud.create_user(self.db, short_name="testuser2", rolle="Lehrkraft")
-        kiste = crud.create_kiste(self.db, qr_code_id="QR789", titel="Test Kiste 3")
+        kiste = crud.create_kiste(self.db, titel="Test Kiste 3")
 
         ausleihe = crud.ausleihen_kiste(self.db, user1.id, kiste.id)
         self.assertIsNotNone(ausleihe)

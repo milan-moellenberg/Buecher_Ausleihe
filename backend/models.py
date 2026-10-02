@@ -1,3 +1,5 @@
+# SQLAlchemy (models.py) beschreibt, wie Daten in der PostgreSQL-Datenbank gespeichert werden
+
 import enum
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Enum, func

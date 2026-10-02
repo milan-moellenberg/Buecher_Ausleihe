@@ -2,94 +2,110 @@
   <div class="app-container">
     <header class="app-header">
       <h1>📚 Bücherkisten-Ausleihe</h1>
+      <Button 
+        :label="showAdmin ? 'Zur Ausleihe' : 'Admin Bereich'" 
+        :icon="showAdmin ? 'pi pi-book' : 'pi pi-cog'" 
+        severity="secondary" 
+        size="small"
+        @click="toggleAdminView"
+      />
     </header>
 
     <main class="content">
-      <!-- 1. SCANNER & SUCHE SECTION -->
-      <Card class="scanner-card">
-        <template #title>📷 Kiste scannen oder auswählen</template>
-        <template #content>
-          <div class="scanner-actions">
-            <Button 
-              :label="scannerAktiv ? 'Kamera schließen' : 'QR-Code scannen'" 
-              :icon="scannerAktiv ? 'pi pi-times' : 'pi pi-camera'" 
-              :severity="scannerAktiv ? 'danger' : 'primary'"
-              class="p-button-lg full-width"
-              @click="toggleScanner" 
-            />
-          </div>
-
-          <!-- HTML5 QR-Code Kamera Container -->
-          <div v-show="scannerAktiv" id="qr-reader" class="qr-reader-box"></div>
-
-          <!-- Manuelle Auswahl / Suche als Fallback -->
-          <div class="manual-select">
-            <label for="kiste-select">Oder Kiste manuell wählen:</label>
-            <Select 
-              id="kiste-select"
-              v-model="ausgewaehlteKisteQr" 
-              :options="kisten" 
-              optionLabel="titel" 
-              optionValue="qr_code_id" 
-              placeholder="Kiste aus Liste wählen..." 
-              class="full-width"
-              @change="onKisteSelect"
-            />
-          </div>
-        </template>
-      </Card>
-
-      <!-- 2. KISTEN DETAILS & STATUS DISPLAY -->
-      <Card v-if="aktuelleKiste" class="details-card">
-        <template #title>
-          <div class="card-title-status">
-            <span>{{ aktuelleKiste.titel }}</span>
-            <Tag 
-              :severity="aktuelleAusleihe ? 'warning' : 'success'" 
-              :value="aktuelleAusleihe ? 'Ausgeliehen' : 'Verfügbar'"
-              class="status-tag"
-            />
-          </div>
-        </template>
-        <template #subtitle>
-          QR-ID: <code>{{ aktuelleKiste.qr_code_id }}</code> | Kategorie: {{ aktuelleKiste.kategorie || 'Keine' }}
-        </template>
-        <template #content>
-          <p class="description">{{ aktuelleKiste.beschreibung || 'Keine Beschreibung vorhanden.' }}</p>
-
-          <Divider />
-
-          <!-- Ausleih-Status Info -->
-          <div class="status-info-box">
-            <div v-if="aktuelleAusleihe" class="info-active">
-              <p><i class="pi pi-user"></i> <strong>Aktuell ausgeliehen von:</strong> {{ getLehrerName(aktuelleAusleihe.ausleih_user_id) }}</p>
-              <p><i class="pi pi-calendar"></i> <strong>Seit:</strong> {{ formatDatum(aktuelleAusleihe.ausleih_datum) }}</p>
+      <!-- 1. REGULÄRER AUSLEIH- & SCANNER-BEREICH -->
+      <div v-if="!showAdmin">
+        <!-- 1.1 SCANNER & SUCHE SECTION -->
+        <Card class="scanner-card">
+          <template #title>📷 Kiste scannen oder auswählen</template>
+          <template #content>
+            <div class="scanner-actions">
+              <Button 
+                :label="scannerAktiv ? 'Kamera schließen' : 'QR-Code scannen'" 
+                :icon="scannerAktiv ? 'pi pi-times' : 'pi pi-camera'" 
+                :severity="scannerAktiv ? 'danger' : 'primary'"
+                size="large"
+                class="full-width"
+                @click="toggleScanner" 
+              />
             </div>
-            <div v-else class="info-empty">
-              <p><i class="pi pi-check-circle"></i> Diese Kiste steht aktuell im Regal und kann ausgeliehen werden.</p>
-            </div>
-          </div>
 
-          <div class="action-buttons">
-            <Button 
-              v-if="!aktuelleAusleihe" 
-              label="Kiste Ausleihen" 
-              icon="pi pi-sign-in" 
-              severity="success" 
-              class="p-button-lg full-width"
-              @click="showAusleihenDialog = true" 
-            />
-            <Button 
-              v-else 
-              label="Kiste Zurückgeben" 
-              icon="pi pi-sign-out" 
-              severity="help" 
-              class="p-button-lg full-width"
-              @click="showRueckgabeDialog = true" 
-            />
-          </div>
-        </template>
-      </Card>
+            <!-- HTML5 QR-Code Kamera Container -->
+            <div v-show="scannerAktiv" id="qr-reader" class="qr-reader-box"></div>
+
+            <!-- Manuelle Auswahl / Suche als Fallback -->
+            <div class="manual-select">
+              <label for="kiste-select">Oder Kiste manuell wählen:</label>
+              <Select 
+                id="kiste-select"
+                v-model="ausgewaehlteKisteQr" 
+                :options="kisten" 
+                optionLabel="titel" 
+                optionValue="qr_code_id" 
+                placeholder="Kiste aus Liste wählen..." 
+                class="full-width"
+                @change="onKisteSelect"
+              />
+            </div>
+          </template>
+        </Card>
+
+        <!-- 1.2 KISTEN DETAILS & STATUS DISPLAY -->
+        <Card v-if="aktuelleKiste" class="details-card">
+          <template #title>
+            <div class="card-title-status">
+              <span>{{ aktuelleKiste.titel }}</span>
+              <Tag 
+                :severity="aktuelleAusleihe ? 'warn' : 'success'" 
+                :value="aktuelleAusleihe ? 'Ausgeliehen' : 'Verfügbar'"
+                class="status-tag"
+              />
+            </div>
+          </template>
+          <template #subtitle>
+            QR-ID: <code>{{ aktuelleKiste.qr_code_id }}</code> | Kategorie: {{ aktuelleKiste.kategorie || 'Keine' }}
+          </template>
+          <template #content>
+            <p class="description">{{ aktuelleKiste.beschreibung || 'Keine Beschreibung vorhanden.' }}</p>
+
+            <Divider />
+
+            <!-- Ausleih-Status Info -->
+            <div class="status-info-box">
+              <div v-if="aktuelleAusleihe" class="info-active">
+                <p><i class="pi pi-user"></i> <strong>Aktuell ausgeliehen von:</strong> {{ getLehrerName(aktuelleAusleihe.ausleih_user_id) }}</p>
+                <p><i class="pi pi-calendar"></i> <strong>Seit:</strong> {{ formatDatum(aktuelleAusleihe.ausleih_datum) }}</p>
+              </div>
+              <div v-else class="info-empty">
+                <p><i class="pi pi-check-circle"></i> Diese Kiste steht laut System aktuell im Regal und kann ausgeliehen werden.</p>
+              </div>
+            </div>
+
+            <div class="action-buttons">
+              <Button 
+                v-if="!aktuelleAusleihe" 
+                label="Kiste Ausleihen" 
+                icon="pi pi-sign-in" 
+                severity="success" 
+                size="large"
+                class="full-width"
+                @click="showAusleihenDialog = true" 
+              />
+              <Button 
+                v-else 
+                label="Kiste Zurückgeben" 
+                icon="pi pi-sign-out" 
+                severity="help" 
+                size="large"
+                class="full-width"
+                @click="showRueckgabeDialog = true" 
+              />
+            </div>
+          </template>
+        </Card>
+      </div>
+
+      <!-- 2. ADMIN DASHBOARD -->
+      <AdminDashboard v-else @data-updated="ladeBasisDaten" />
     </main>
 
     <!-- 3. DIALOG: AUSLEIHEN -->
@@ -108,7 +124,7 @@
         </div>
         <div class="field">
           <label>Schul-Passwort</label>
-          <Password v-model="schulPasswort" :feedback="false" toggleMask placeholder="Passwort eingeben" class="full-width" />
+          <InputPassword v-model="schulPasswort" :feedback="false" toggleMask placeholder="Passwort eingeben" class="full-width" />
         </div>
       </div>
       <template #footer>
@@ -120,9 +136,9 @@
     <!-- 4. DIALOG: BESTÄTIGUNG FORCE-REBORROW (409 CONFLICT) -->
     <Dialog v-model:visible="showForceDialog" header="Kiste ist noch ausgeliehen!" :modal="true" class="responsive-dialog">
       <p class="dialog-warning">
-        <i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: var(--p-warning-color);"></i><br />
-        Diese Kiste ist aktuell noch als <strong>ausgeliehen</strong> eingetragen.<br /><br />
-        Möchtest du sie automatisch als zurückgegeben markieren und direkt auf dich neu ausleihen?
+        <i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: var(--p-orange-500);"></i><br />
+        Diese Kiste ist aktuell noch im System als <strong>ausgeliehen</strong> eingetragen.<br /><br />
+        Ist die Kiste samt Inhalt wieder da? Möchtest du sie automatisch als zurückgegeben markieren und direkt auf dich neu ausleihen?
       </p>
       <template #footer>
         <Button label="Abbrechen" severity="secondary" @click="showForceDialog = false" />
@@ -146,7 +162,7 @@
         </div>
         <div class="field">
           <label>Schul-Passwort</label>
-          <Password v-model="schulPasswort" :feedback="false" toggleMask placeholder="Passwort eingeben" class="full-width" />
+          <InputPassword v-model="schulPasswort" :feedback="false" toggleMask placeholder="Passwort eingeben" class="full-width" />
         </div>
       </div>
       <template #footer>
@@ -162,6 +178,9 @@ import { ref, onMounted } from 'vue'
 import { Html5Qrcode } from 'html5-qrcode'
 import api from './api.js'
 
+// Admin Dashboard Import
+import AdminDashboard from './components/AdminDashboard.vue'
+
 // PrimeVue Komponenten
 import Card from 'primevue/card'
 import Button from 'primevue/button'
@@ -169,7 +188,10 @@ import Select from 'primevue/select'
 import Tag from 'primevue/tag'
 import Divider from 'primevue/divider'
 import Dialog from 'primevue/dialog'
-import Password from 'primevue/password'
+import InputPassword from 'primevue/password'
+
+// State für Ansichten-Umschaltung
+const showAdmin = ref(false)
 
 // Daten-States
 const kisten = ref([])
@@ -209,6 +231,21 @@ async function ladeBasisDaten() {
   }
 }
 
+// Function zum Umschalten der Admin-Ansicht
+async function toggleAdminView() {
+  // Wenn wir den Admin-Bereich VERLASSEN und zur Ausleihe zurückkehren:
+  if (showAdmin.value) {
+    // Lädt Kisten und Lehrer frisch aus der DB!
+    await ladeBasisDaten() 
+
+    // Ausgewählte Kiste und Info-Fenster zurücksetzen
+    aktuelleKiste.value = null
+    ausgewaehlteKisteQr.value = null
+    aktuelleAusleihe.value = null
+  }
+  showAdmin.value = !showAdmin.value
+}
+
 // Kiste anhand der QR-ID abrufen und Status prüfen
 async function waehleKisteAus(qrCodeId) {
   try {
@@ -216,10 +253,7 @@ async function waehleKisteAus(qrCodeId) {
     aktuelleKiste.value = res.data
     
     // Prüfen, ob für diese Kiste eine aktive Ausleihe vorliegt
-    // (Hinweis: Über Admin-History oder eigenen Check-Endpunkt möglich, hier filtern wir die History)
-    const historyRes = await api.getKisten() // Nutzt Kisten-Details
-    // Für die Statusabfrage holen wir die Historie oder prüfen aktive Ausleihe:
-    aktuelleAusleihe.value = null // Wird bei Bedarf erweitert
+    aktuelleAusleihe.value = res.data.aktive_ausleihe
   } catch (err) {
     alert('Kiste konnte nicht gefunden werden!')
   }
@@ -348,9 +382,15 @@ function formatDatum(isoString) {
 }
 
 .app-header {
-  text-align: center;
-  line-height: 1.2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1.5rem;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
 }
 
 .scanner-card, .details-card {
@@ -382,10 +422,18 @@ function formatDatum(isoString) {
 }
 
 .status-info-box {
-  background: #f8f9fa;
+  background-color: var(--p-surface-100, #f8f9fa);
+  color: var(--p-surface-900, #212529);
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1rem;
+  border: 1px solid var(--p-surface-200, #e9ecef);
+}
+
+.status-info-box p,
+.status-info-box strong,
+.status-info-box i {
+  color: var(--p-surface-900, #212529);
 }
 
 .action-buttons {

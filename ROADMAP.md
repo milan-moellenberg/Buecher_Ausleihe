@@ -5,7 +5,7 @@
   - [x] Git-Repository lokal initialisieren und auf GitHub pushen
   - [x] `.gitignore` einrichten (Ausschluss von `venv/`, `node_modules/`, `.env`, DB-Anmeldedaten)
   - [x] Doku-Dateien anlegen (`README.md`, `ROADMAP.md`, `PROTOKOLL.md`)
-- [ ] **PostgreSQL Installation & Datenbank-Setup**
+- [x] **PostgreSQL Installation & Datenbank-Setup**
   - [x] PostgreSQL installieren (18.6)
   - [x] Datenbankzugriff über pgAdmin 4 testen
   - [x] DB-User `ausleihe_user` mit sicherem Passwort anlegen
@@ -43,30 +43,30 @@
 ---
 
 ## 3. Frontend-Entwicklung (Web App)
-- [ ] **Setup & Framework-Auswahl**
+- [x] **Setup & Framework-Auswahl**
   - [x] Node.js installieren
   - [x] Frontend-Framework aufsetzen (z. B. Angular Material, React oder Vue.js) entschieden für Vue.js
   - [x] API-Client / Axios für Kommunikation mit dem FastAPI-Backend einrichten
-- [ ] **Benutzeroberfläche für Lehrer (QR-Code Zielseite)**
-  - [ ] Login / Passwortabfrage (Schul-Passwort)
-  - [ ] Dynamische Scan-Ansicht (`/scan/{kisten_id}`):
-    - [ ] **Fall A (Kiste verfügbar):** Ausleih-Formular (Lehrer-Dropdown + Schnell-Registrierung, Klasse-Eingabe, Ausleihen-Button)
-    - [ ] **Fall B (Kiste ausgeliehen):** Statusanzeige (Wer/Seit wann) + Rückgabe-Formular (Auswahl des Rückgebers, Zurückbringen-Button)
-- [ ] **Admin-Dashboard**
-  - [ ] Passwortgeschützter Admin-Bereich
-  - [ ] Kisten-Übersicht mit Live-Status und Such- & Filterfunktion
-  - [ ] Formular zum Hinzufügen/Bearbeiten neuer Kisten
-  - [ ] Ausleih-Historie & Protokoll-Einsicht
+- [x] **Benutzeroberfläche für Lehrer (QR-Code Zielseite)**
+  - [x] Login / Passwortabfrage (Schul-Passwort)
+  - [x] Dynamische Scan-Ansicht (`/scan/{kisten_id}`):
+    - [x] **Fall A (Kiste verfügbar):** Ausleih-Formular (Lehrer-Dropdown + Schnell-Registrierung, Klasse-Eingabe, Ausleihen-Button)
+    - [x] **Fall B (Kiste ausgeliehen):** Statusanzeige (Wer/Seit wann) + Rückgabe-Formular (Auswahl des Rückgebers, Zurückbringen-Button)
+- [x] **Admin-Dashboard**
+  - [x] Passwortgeschützter Admin-Bereich
+  - [x] Kisten-Übersicht mit Live-Status und Such- & Filterfunktion
+  - [x] Formular zum Hinzufügen/Bearbeiten neuer Kisten
+  - [x] Ausleih-Historie & Protokoll-Einsicht
 
 ---
 
 ## 4. Deployment & Server-Infrastruktur (Linux)
-- [ ] **Virtuelle Maschine & OS Setup**
-  - [ ] VirtualBox installieren
-  - [ ] Linux-Distribution (Ubuntu Server oder Rocky Linux) aufsetzen
-  - [ ] Systempakete aktualisieren & Basis-Tools installieren (`git`, `curl`, `build-essential`)
+- [x] **Virtuelle Maschine & OS Setup**
+  - [x] VirtualBox 7.2.20 installieren
+  - [x] Linux-Distribution (Ubuntu Server 26.04.1 LTS ) aufsetzen
+  - [x] Systempakete aktualisieren & Basis-Tools installieren (`git`, `curl`, `build-essential`)
 - [ ] **Server-Umgebung konfigurieren**
-  - [ ] PostgreSQL auf Linux installieren und Datenbank importieren/konfigurieren
+  - [x] PostgreSQL auf Linux installieren und Datenbank importieren/konfigurieren
   - [ ] Python & Node.js auf dem Server installieren
   - [ ] Repository via `git clone` auf den Server holen
 - [ ] **Webserver & Process Management**

@@ -41,3 +41,39 @@
 - UI-Bibliothek für die Frontend: primevue
   - npm install primevue @primevue/themes primeicons
   - npm install html5-qrcode (für den codescanner)
+- Testen in Frontend und bugs beheben
+- neue Funktionalitäten von unten nach oben
+  - backend
+    - eventuell models.py
+    - crud.py (+test)
+    - schemas.py pydantic
+    - main.py fastAPI Haupt-WPI
+   - frontend
+     - api.js
+     - Vue.js
+     - App.vue
+       - AdminDashboard.vue
+- dependencies in der frontend/package.json auf sinnvolle versionen angepasst (zuvor invalid primeUI license)
+- Server auf meinem Rechner erstellen:
+  - VirtualBox 7.2.20 installiert
+  - Ubuntu Server 26.04.1 LTS iso heruntergeladen
+  - Virtualbox erstellt und mit iso einen ausleihe-server erstellt
+  - über ip a die IPv4 Adresse erfahren
+  - in vs code terminal 
+    - über ssh benutzername@192.168.178.X verbunden
+    - updates: 
+      - sudo apt update && sudo apt upgrade -y
+      - sudo apt install -y git curl build-essential software-properties-common
+    - sudo apt install -y postgresql postgresql-contrib libpq-dev
+    - sudo -u postgres psql    in die postgreSQL shell wechseln
+    - CREATE USER ausleih_user WITH PASSWORD 'dein_db_passwort';
+    - CREATE DATABASE ausleih_db OWNER ausleih_user;
+    - GRANT ALL PRIVILEGES ON DATABASE ausleih_db TO ausleih_user;
+    - \q   quit postgreSQL shell
+    - test mit: psql -U ausleih_user -d ausleih_db -h localhost
+    - sudo apt install -y python3-venv python3-pip nodejs npm
+    - git clone <DEINE_GIT_REPOSITORY_URL>
+    - cd <DEIN_PROJEKT_ORDNERNAME>
+    - python3 -m venv venv
+    - source venv/bin/activate
+    - pip install -r backend/requirements.txt

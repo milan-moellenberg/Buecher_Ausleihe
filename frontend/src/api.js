@@ -1,37 +1,59 @@
 import axios from 'axios'
 
-// use FastAPI-base url to create axios instance
+const API_BASE_URL = 'http://localhost:8000'
+
+// Axios Instanz erstellen
 const api = axios.create({
-    baseURL: 'http://localhost:8000',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
 
-export default{
-    //  --- Kisten ---
-    getKisten(){
-        return api.get('/kisten');
-    },
-    getKisteByQrCode(qrCodeId){
-        return api.get(`/kisten/${qrCodeId}`)
-    },
+export default {
+  // --- QR-Code URL Helper ---
+  getQrCodeUrl(kisteId) {
+    return `${API_BASE_URL}/kisten/${kisteId}/qrcode`
+  },
 
-    //  --- Lehrkräfte ---
-    getLehrer() {
-        return api.get('/lehrer');
-    },
+  // --- Kisten ---
+  getKisten() {
+    return api.get('/kisten')
+  },
+  getKisteByQrCode(qrCodeId) {
+    return api.get(`/kisten/${qrCodeId}`)
+  },
+  createKiste(kisteData, adminPassword) {
+    return api.post(`/admin/kisten?password=${encodeURIComponent(adminPassword)}`, kisteData)
+  },
+  updateKiste(kisteId, data, password) {
+    return api.put(`/admin/kisten/${kisteId}?password=${encodeURIComponent(password)}`, data)
+  },
+  regenerateQRCodes(password) {
+    return api.post(`/admin/kisten/regenerate-qrcodes?password=${encodeURIComponent(password)}`)
+  },
 
-    //  --- Ausleihe und Rückgabe ---
-    ausleihen(payload, forceReborrow = false){
-        return api.post(`/ausleihe?force_reborrow=${forceReborrow}`, payload);
-    },
-    rueckgabe(payload){
-        return api.post('/rueckgabe', payload);
-    },
+  // --- Lehrkräfte ---
+  getLehrer() {
+    return api.get('/lehrer')
+  },
+  createLehrer(userData, adminPassword) {
+    return api.post(`/lehrer?password=${encodeURIComponent(adminPassword)}`, userData)
+  },
+  updateUser(userId, data, password) {
+    return api.put(`/admin/users/${userId}?password=${encodeURIComponent(password)}`, data)
+  },
 
-    //  --- Admin ---
-    getHistory(adminPassword){
-        return api.get(`/admin/ausleihe?admin_passwort=${adminPassword}`)
-    }
+  // --- Ausleihe und Rückgabe ---
+  ausleihen(payload, forceReborrow = false) {
+    return api.post(`/ausleihe?force_reborrow=${forceReborrow}`, payload)
+  },
+  rueckgabe(payload) {
+    return api.post('/rueckgabe', payload)
+  },
+
+  // --- Admin ---
+  getHistory(adminPassword) {
+    return api.get(`/admin/ausleihe?admin_password=${encodeURIComponent(adminPassword)}`)
+  }
 }
