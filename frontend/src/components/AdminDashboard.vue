@@ -1,6 +1,6 @@
 <template>
   <div class="admin-container">
-    <!-- 1. PASSWORT-ABFRAGE (Wenn noch nicht authentifiziert) -->
+    <!-- 1. PASSWORT-ABFRAGE -->
     <Card v-if="!isLoggedIn" class="login-card">
       <template #title>🔒 Admin Login</template>
       <template #content>
@@ -21,27 +21,32 @@
       </template>
     </Card>
 
-    <!-- 2. HAUPT-DASHBOARD (Nach erfolgreichem Login) -->
+    <!-- 2. HAUPT-DASHBOARD -->
     <div v-else class="dashboard-content">
-      <div class="dashboard-header">
+      <div class="dashboard-header no-print">
         <h2>🛠️ Admin Dashboard</h2>
         <Button label="Abmelden" icon="pi pi-sign-out" severity="secondary" text @click="logout" />
       </div>
 
-      <!-- PrimeVue v4 Tabs Struktur -->
-      <Tabs value="0">
-        <!-- Tab-Header Navigation -->
+      <!-- PrimeVue v4 Tabs -->
+      <Tabs value="0" class="no-print">
         <TabList>
           <Tab value="0">📦 Kisten</Tab>
           <Tab value="1">👥 Lehrkräfte / User</Tab>
           <Tab value="2">📋 Alle Ausleihen</Tab>
         </TabList>
 
-        <!-- Tab Inhalte -->
         <TabPanels>
-          <!-- REITER 1: KISTEN & AUSLEIHHISTORIE -->
+          <!-- REITER 1: KISTEN -->
           <TabPanel value="0">
             <div class="action-bar">
+              <Button 
+                v-if="selectedKisten.length > 0"
+                :label="`QR-Codes drucken (${selectedKisten.length})`" 
+                icon="pi pi-print" 
+                severity="info" 
+                @click="printSelectedQRCodes" 
+              />
               <Button 
                 label="Alle QR-Codes neu generieren" 
                 icon="pi pi-refresh" 
@@ -49,34 +54,45 @@
                 outlined 
                 @click="regenerateAllQRCodes" 
               />
-              <Button label="Neue Kiste anlegen" 
-              icon="pi pi-plus" 
-              severity="success" 
-              @click="showNewKisteDialog = true" />
+              <Button 
+                label="Neue Kiste anlegen" 
+                icon="pi pi-plus" 
+                severity="success" 
+                @click="showNewKisteDialog = true" 
+              />
             </div>
 
             <DataTable 
               :value="kistenWithStatus" 
+              v-model:selection="selectedKisten"
               v-model:expandedRows="expandedRows" 
               dataKey="id" 
               responsiveLayout="scroll"
             >
+              <!-- Checkbox-Auswahl & Expander -->
+              <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
               <Column expander style="width: 3rem" />
-              <Column field="qr_code_id" header="QR-ID" />
+              
               <Column field="titel" header="Titel" />
               <Column field="kategorie" header="Kategorie" />
-              <Column header="QR-Code Image">
+
+              <!-- ANGASSUNG: QR-Code Bild + QR-ID direkt darunter -->
+              <Column header="QR-Code">
                 <template #body="slotProps">
-                  <a :href="api.getQrCodeUrl(slotProps.data.id)" target="_blank">
-                    <img 
-                      :src="api.getQrCodeUrl(slotProps.data.id)" 
-                      alt="QR Code" 
-                      style="width: 40px; height: 40px; object-fit: contain;" 
-                      @error="handleImageError"
-                    />
-                  </a>
+                  <div class="qr-cell">
+                    <a :href="api.getQrCodeUrl(slotProps.data.id)" target="_blank">
+                      <img 
+                        :src="api.getQrCodeUrl(slotProps.data.id)" 
+                        alt="QR Code" 
+                        class="table-qr-img"
+                        @error="handleImageError"
+                      />
+                    </a>
+                    <code class="qr-id-subtext">{{ slotProps.data.qr_code_id }}</code>
+                  </div>
                 </template>
               </Column>
+
               <Column header="Status">
                 <template #body="slotProps">
                   <Tag 
@@ -86,7 +102,7 @@
                 </template>
               </Column>
 
-              <!-- AKTIONEN SPALTE (KISTE BEARBEITEN) -->
+              <!-- AKTIONEN -->
               <Column header="Aktionen" style="width: 5rem">
                 <template #body="slotProps">
                   <Button 
@@ -99,7 +115,7 @@
                 </template>
               </Column>
 
-              <!-- Ausklappbare Ausleihhistorie der Kiste -->
+              <!-- Ausklappbare Historie -->
               <template #rowexpansion="slotProps">
                 <div class="expansion-box">
                   <h4>📜 Ausleihhistorie für "{{ slotProps.data.titel }}"</h4>
@@ -127,7 +143,7 @@
             </DataTable>
           </TabPanel>
 
-          <!-- REITER 2: USER / LEHRKRÄFTE -->
+          <!-- REITER 2: USER -->
           <TabPanel value="1">
             <div class="action-bar">
               <Button label="Neuen User anlegen" icon="pi pi-user-plus" severity="success" @click="openNewUser" />
@@ -144,8 +160,6 @@
                   />
                 </template>
               </Column>
-
-              <!-- AKTIONEN SPALTE (USER BEARBEITEN) -->
               <Column header="Aktionen" style="width: 5rem">
                 <template #body="slotProps">
                   <Button 
@@ -160,7 +174,7 @@
             </DataTable>
           </TabPanel>
 
-          <!-- REITER 3: GESAMTE AUSLEIHHISTORIE -->
+          <!-- REITER 3: AUSLEIHHISTORIE -->
           <TabPanel value="2">
             <DataTable :value="ausleihen" responsiveLayout="scroll" :paginator="true" :rows="10">
               <Column field="id" header="ID" />
@@ -185,9 +199,21 @@
           </TabPanel>
         </TabPanels>
       </Tabs>
+
+      <!-- DRUCK-LAYOUT (NUR PER @media print SICHTBAR) -->
+      <div class="print-only-container">
+        <div class="print-grid">
+          <div v-for="kiste in selectedKisten" :key="kiste.id" class="print-card">
+            <h3 class="print-title">{{ kiste.titel }}</h3>
+            <p v-if="kiste.kategorie" class="print-category">{{ kiste.kategorie }}</p>
+            <img :src="api.getQrCodeUrl(kiste.id)" class="print-qr-img" />
+            <div class="print-qr-id">{{ kiste.qr_code_id }}</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- DIALOG: NEUE KISTE ANLEGEN -->
+    <!-- DIALOGE -->
     <Dialog v-model:visible="showNewKisteDialog" header="Neue Kiste anlegen" :modal="true" class="responsive-dialog">
       <div class="dialog-form">
         <div class="field">
@@ -209,7 +235,6 @@
       </template>
     </Dialog>
 
-    <!-- DIALOG: KISTE BEARBEITEN -->
     <Dialog v-model:visible="showEditKisteDialog" header="Kiste bearbeiten" :modal="true" class="responsive-dialog">
       <div class="dialog-form">
         <div class="field">
@@ -236,7 +261,6 @@
       </template>
     </Dialog>
 
-    <!-- DIALOG: USER ANLEGEN / BEARBEITEN -->
     <Dialog 
       v-model:visible="showUserDialog" 
       :header="isEditingUser ? 'User bearbeiten' : 'Neuen User anlegen'" 
@@ -295,23 +319,20 @@ const kisten = ref([])
 const users = ref([])
 const ausleihen = ref([])
 const expandedRows = ref([])
+const selectedKisten = ref([]) // NEU: Ausgewählte Kisten für Druck
 
-// Rollen-Optionen für User
 const rollenOptionen = ref(['Lehrkraft', 'Ehemalig'])
 
-// Dialog States für Kisten
 const showNewKisteDialog = ref(false)
 const newKiste = ref({ qr_code_id: '', titel: '', kategorie: '', beschreibung: '' })
 
 const showEditKisteDialog = ref(false)
 const editKisteData = ref({ id: null, qr_code_id: '', titel: '', kategorie: '', beschreibung: '' })
 
-// Combined Dialog State für User (Anlegen & Bearbeiten)
 const showUserDialog = ref(false)
 const isEditingUser = ref(false)
 const userFormData = ref({ id: null, short_name: '', rolle: 'Lehrkraft' })
 
-// listener
 const emit = defineEmits(['data-updated'])
 
 async function login() {
@@ -344,12 +365,12 @@ async function refreshData() {
     kisten.value = resK.data
     users.value = resU.data
     ausleihen.value = resA.data
+    selectedKisten.value = [] // Auswahl nach Refresh zurücksetzen
   } catch (err) {
     console.error('Fehler beim Aktualisieren der Admin-Daten:', err)
   }
 }
 
-// Errechnet für jede Kiste, ob sie aktuell ausgeliehen ist
 const kistenWithStatus = computed(() => {
   return kisten.value.map(k => {
     const activeLoan = ausleihen.value.find(a => a.kiste_id === k.id && a.status === 'ausgeliehen')
@@ -364,6 +385,12 @@ function getKistenHistorie(kisteId) {
   return ausleihen.value.filter(a => a.kiste_id === kisteId)
 }
 
+// Drucken-Aktion ausführen
+function printSelectedQRCodes() {
+  if (selectedKisten.value.length === 0) return
+  window.print()
+}
+
 // --- KISTEN HANDLER ---
 async function createKiste() {
   if (!newKiste.value.titel) {
@@ -376,7 +403,6 @@ async function createKiste() {
     showNewKisteDialog.value = false
     newKiste.value = { titel: '', kategorie: '', beschreibung: '' }
     await refreshData()
-
     emit('data-updated')
   } catch (err) {
     alert('Fehler beim Erstellen der Kiste: ' + (err.response?.data?.detail || err.message))
@@ -400,7 +426,6 @@ async function saveKisteEdit() {
     alert('Kiste wurde erfolgreich aktualisiert!')
     showEditKisteDialog.value = false
     await refreshData()
-
     emit('data-updated')
   } catch (err) {
     alert('Fehler beim Aktualisieren der Kiste: ' + (err.response?.data?.detail || err.message))
@@ -411,7 +436,6 @@ async function regenerateAllQRCodes() {
   if (!confirm('Möchtest du wirklich alle QR-Code-Bilder für sämtliche Kisten im Ordner neu generieren?')) {
     return
   }
-
   try {
     const res = await api.regenerateQRCodes(activeAdminPassword.value)
     alert(res.data.message || 'QR-Codes wurden erfolgreich neu generiert!')
@@ -420,7 +444,6 @@ async function regenerateAllQRCodes() {
     alert('Fehler beim Generieren der QR-Codes: ' + (err.response?.data?.detail || err.message))
   }
 }
-
 
 // --- USER HANDLER ---
 function openNewUser() {
@@ -450,14 +473,12 @@ async function saveUser() {
     }
     showUserDialog.value = false
     await refreshData()
-
     emit('data-updated')
   } catch (err) {
     alert('Fehler beim Speichern des Users: ' + (err.response?.data?.detail || err.message))
   }
 }
 
-// Hilfsfunktionen
 function getLehrerName(userId) {
   if (!userId) return '-'
   const u = users.value.find(x => x.id === userId)
@@ -474,14 +495,10 @@ function formatDatum(iso) {
   return new Date(iso).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' })
 }
 
-
 function handleImageError(event) {
-  // Verhindert Endlosschleifen und setzt ein Platzhalter-Bild oder versteckt das kaputte Bild
   event.target.onerror = null;
   event.target.src = 'https://via.placeholder.com/40?text=QR+Error';
 }
-
-
 </script>
 
 <style scoped>
@@ -508,6 +525,28 @@ function handleImageError(event) {
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
+}
+
+/* Zelle mit Bild und Untertext */
+.qr-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.table-qr-img {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+}
+
+.qr-id-subtext {
+  font-size: 0.75rem;
+  background-color: var(--p-surface-100, #f1f3f5);
+  padding: 1px 4px;
+  border-radius: 4px;
+  color: var(--p-surface-700, #495057);
 }
 
 .expansion-box {
@@ -541,5 +580,82 @@ function handleImageError(event) {
 .responsive-dialog {
   width: 90vw;
   max-width: 500px;
+}
+
+/* Standby-Verstecken des Druck-Containers auf dem Bildschirm */
+.print-only-container {
+  display: none;
+}
+
+/* --- DRUCK-LAYOUT (A4, EXACT 4 PRO SEITE) --- */
+@media print {
+  /* Versteckt den kompletten normalen Bildschirm-Inhalt */
+  .no-print,
+  :deep(.app-header),
+  :deep(.p-tablist),
+  :deep(.action-bar),
+  :deep(.p-datatable) {
+    display: none !important;
+  }
+
+  .admin-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .print-only-container {
+    display: block !important;
+  }
+
+  .print-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: calc(50vh - 20mm); /* Genau 2x2 Grid pro DIN A4 Blatt */
+    gap: 15mm;
+    padding: 10mm;
+    box-sizing: border-box;
+  }
+
+  .print-card {
+    border: 2px dashed #333;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .print-title {
+    font-size: 1.4rem;
+    margin: 0 0 5px 0;
+    font-weight: bold;
+  }
+
+  .print-category {
+    font-size: 1rem;
+    color: #555;
+    margin: 0 0 10px 0;
+  }
+
+  .print-qr-img {
+    width: 160px;
+    height: 160px;
+    object-fit: contain;
+  }
+
+  .print-qr-id {
+    font-family: monospace;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 8px;
+    background-color: #eee;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
 }
 </style>

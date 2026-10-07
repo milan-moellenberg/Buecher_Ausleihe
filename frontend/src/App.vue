@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <header class="app-header">
+    <header class="app-header no-print">
       <h1>📚 Bücherkisten-Ausleihe</h1>
       <Button 
         :label="showAdmin ? 'Zur Ausleihe' : 'Admin Bereich'" 
