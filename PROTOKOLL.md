@@ -1,11 +1,12 @@
 - git eingerichtet
 - PostgreSQL Version 18.6 lokal installiert, über pgAdmin 4 ausleihe_db für ausleihe_user erstellt
+- postgres admin zugang:  & "D:\Program Files\PostgreSQL\18\bin\psql.exe" -U postgres (\l, \du, \q für quit)
 - Python 3.14.7 lokal installiert mit pip 26.2.1
 - Visual Studio Code 1.138.0 lokal installiert (Erweiterungen Python, Pylance, Markdown All in One), mit github synchronisiert
 - .env für sensible Daten angelegt
 - venv eingerichtet (WinPowershell: Set-ExecutionPolicy RemoteSigned benötigt)
   - python -m venv venv
-  - .\venv\Scripts\Activate.ps1
+  - **.\venv\Scripts\Activate.ps1**
   - pip install -r requirements.txt
     - fastapi
     - uvicorn[standard]
@@ -25,13 +26,16 @@
 - main.py für die REST Endpunkte.  FastAPI, Validierungen/Fehlermeldungen mit Pydantic und Zugriff auf SQLAlchemy über crud.py läuft hier zusammen
 - uvicorn als Webserver: 
   - pip install uvicorn
-  - BACKEND: uvicorn main:app --reload
+  - **BACKEND**
+    - server: **uvicorn main:app --reload**
+    - lokal: **lokal zum testen: uvicorn main:app --reload --port 8000 --log-level warning**     (http://localhost:5173/)
+
 - Swagger Dokumentation im browser unter http://127.0.0.1:8000/docs oder http://localhost:8000/docs
 - lokal installiert: node.js v24.21.0
 - Vue.js als Framework für das frontend gewählt: 
   - npm create vite@latest frontend -- --template vue
   - http://localhost:5173/ ist die lokale Adresse
-  - FRONTEND: npm run dev
+  - **FRONTEND: npm run dev**
   - für später: npm run dev -- --host um im wlan freizugeben
 - Axios nutzen um Frontend die Kommunikation mit FastAPI- backend zu ermöglichen
   - npm install axios 
@@ -66,11 +70,11 @@
       - sudo apt install -y git curl build-essential software-properties-common
     - sudo apt install -y postgresql postgresql-contrib libpq-dev
     - sudo -u postgres psql    in die postgreSQL shell wechseln
-    - CREATE USER ausleih_user WITH PASSWORD 'dein_db_passwort';
-    - CREATE DATABASE ausleih_db OWNER ausleih_user;
-    - GRANT ALL PRIVILEGES ON DATABASE ausleih_db TO ausleih_user;
+    - CREATE USER ausleihe_user WITH PASSWORD 'dein_db_passwort';
+    - CREATE DATABASE ausleihe_db OWNER ausleihe_user;
+    - GRANT ALL PRIVILEGES ON DATABASE ausleihe_db TO ausleihe_user;
     - \q   quit postgreSQL shell
-    - test mit: psql -U ausleih_user -d ausleih_db -h localhost
+    - test mit: psql -U ausleihe_user -d ausleihe_db -h localhost
     - sudo apt install -y python3-venv python3-pip nodejs npm
     - git clone DEINE_GIT_REPOSITORY_URL
     - cd DEIN_PROJEKT_ORDNERNAME/backend
@@ -82,6 +86,7 @@
       - npm install
       - npm run build
     - die .env datei erstellen im backend
+    - ip a  (um ip adresse auf server zu sehen) 
     - Nginx für reverse proxy:
       - sudo apt install -y nginx
       - sudo systemctl status nginx (mit q beenden)
@@ -97,3 +102,6 @@
       - sudo systemctl status ausleihe-backend   (Status überprüfen)
       - sudo journalctl -u ausleihe-backend.service -f    (backend-logs in echtzeit ansehen)
       - python init_db.py
+    - für lokales testen .env.development (VITE_API_BASE_URL=http://localhost:8000) und .env.production (VITE_API_BASE_URL=/api) eingerichtet
+    - passwortproblematik mit utf-8 geklärt
+  

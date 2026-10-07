@@ -21,12 +21,14 @@ import schemas
 app = FastAPI(
     title= "Bücher Ausleihe API",
     description= "API für das QR-basierte Ausleihsystem von Kisten mit Büchersätzen an Schulen",
+    root_path= "/api",  # Alle Endpunkte werden unter /api/ verfügbar sein
     version= "1.0.0"
 )
 
-# allow requests from Vue.js Frontend
+# allow requests from Vue.js Frontend; allow origin for local development and production
 origins = [
-    "http://localhost:5173",
+    "http://localhost:5173",  # Standard Vite Dev-Server
+    "http://localhost:3000",
     "http://127.0.0.1:5173",
 ]
 app.add_middleware(
@@ -181,6 +183,7 @@ def edit_user(user_id: int, user_data: schemas.UserUpdate, password: str, db: Se
     if not updated:
         raise HTTPException(status_code=404, detail="User nicht gefunden")
     return updated
+
 
 # --- Ausleihe endpoints ---
 

@@ -71,7 +71,7 @@
   - [x] Repository via `git clone` auf den Server holen
 - [ ] **Webserver & Process Management**
   - [x] Nginx als Reverse Proxy einrichten (Routing auf Backend & Frontend)
-  - [ ] Backend-Prozess als System-Dienst (Systemd) oder mit Gunicorn/Uvicorn konfigurieren
-  - [ ] Anwendung lokal im Netzwerk / der VM aufrufen und durchtesten
+  - [x] Backend-Prozess als System-Dienst (Systemd) oder mit Uvicorn konfigurieren
+  - [x] Anwendung lokal im Netzwerk / der VM aufrufen und durchtesten
 - [ ] **Automatisierung (Optional / Krönung)**
   - [ ] Ansible Playbook schreiben, um das gesamte Deployment (Pakete, Nginx, App-Service, DB) per Skript zu automatisieren
