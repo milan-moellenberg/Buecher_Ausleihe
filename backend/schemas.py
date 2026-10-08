@@ -66,6 +66,7 @@ class KisteResponse(KisteBase):
     
     model_config = ConfigDict(from_attributes=True)
 
-
+class RegenerateQRCodesPayload(BaseModel):
+    kisten_ids: List[int] = []
 
 

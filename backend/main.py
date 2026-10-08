@@ -1,6 +1,7 @@
 # Hier fließen FastAPI (Webserver & Router), SQLAlchemy (Datenbank) und Pydantic (Validierung) zusammen
 
 import os
+from pathlib import Path
 from typing import List
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.responses import FileResponse
@@ -40,7 +41,7 @@ app.add_middleware(
 )
 
 # Pfad zum QR-Code Ordner definieren
-QR_CODE_DIR = "static/qrcodes"
+QR_CODE_DIR = Path("static/qrcodes")
 
 # static folder for QR codes
 os.makedirs("static/qrcodes", exist_ok=True)
@@ -94,10 +95,10 @@ def get_or_create_kiste_qrcode(kiste_id: int, db: Session = Depends(get_db)):
     if not kiste or not kiste.qr_code_id:
         raise HTTPException(status_code=404, detail="Kiste oder QR-Code-ID nicht gefunden")
 
-    file_path = os.path.join(QR_CODE_DIR, f"{kiste.qr_code_id}.png")
-
     # Falls die Datei gelöscht wurde oder nie existierte: On-the-fly generieren!
-    if not os.path.exists(file_path):
+    file_path = QR_CODE_DIR / f"{kiste.qr_code_id}.png"
+
+    if not file_path.exists():
         generate_qr_code(data=kiste.qr_code_id)
 
     return FileResponse(file_path, media_type="image/png")
@@ -123,13 +124,28 @@ def create_kiste(kiste: schemas.KisteCreate, password: str, db: Session = Depend
 @app.put("/admin/kisten/{kiste_id}", response_model=schemas.KisteResponse, tags=["Admin"])
 def edit_kiste(kiste_id: int, kiste_data: schemas.KisteUpdate, password: str, db: Session = Depends(get_db)):
     verify_admin_password(password)
+    
+    # 1. Bisherige Kiste aus der DB abrufen, um die alte QR-ID zu kennen
+    old_kiste = crud.get_kiste(db, kiste_id)  # Oder deine entsprechende CRUD-Funktion zum Suchen
+    if not old_kiste:
+        raise HTTPException(status_code=404, detail="Kiste nicht gefunden")
+    
+    old_qr_id = old_kiste.qr_code_id
+
     try:
+        # 2. Kiste in DB aktualisieren
         updated = crud.update_kiste(db, kiste_id, kiste_data)
-        if not updated:
-            raise HTTPException(status_code=404, detail="Kiste nicht gefunden")
         
-        # Falls QR-ID geändert wurde, neues QR-Code Bild generieren
-        if kiste_data.qr_code_id:
+        # 3. Falls sich die QR-ID geändert hat: Alte Datei löschen & neues Bild erzeugen
+        if kiste_data.qr_code_id and kiste_data.qr_code_id != old_qr_id:
+            # Pfad des alten QR-Codes zusammenbauen
+            old_file_path = QR_CODE_DIR / f"{old_qr_id}.png"
+            
+            # Prüfen ob die alte Datei existiert und löschen
+            if old_file_path.exists():
+                old_file_path.unlink()  # pathlib-spezifisches Löschen
+            
+            # Neues Bild generieren
             generate_qr_code(data=updated.qr_code_id)
             
         return updated
@@ -137,15 +153,24 @@ def edit_kiste(kiste_id: int, kiste_data: schemas.KisteUpdate, password: str, db
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/admin/kisten/regenerate-qrcodes", tags=["Admin"])
-def regenerate_all_qrcodes(password: str, db: Session = Depends(get_db)):
+def regenerate_qrcodes(
+    payload: schemas.RegenerateQRCodesPayload, 
+    password: str, 
+    db: Session = Depends(get_db)
+):
     verify_admin_password(password)
     
-    kisten = db.query(models.Kiste).all()
+    query = db.query(models.Kiste)
+    
+    # Falls gezielte IDs übergeben wurden, darauf filtern
+    if payload.kisten_ids:
+        query = query.filter(models.Kiste.id.in_(payload.kisten_ids))
+        
+    kisten = query.all()
     generated_count = 0
     
     for kiste in kisten:
         if kiste.qr_code_id:
-            # Erzeugt das Bild unter /static/qrcodes/{qr_code_id}.png
             generate_qr_code(data=kiste.qr_code_id)
             generated_count += 1
             

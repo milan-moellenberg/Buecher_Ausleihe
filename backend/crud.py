@@ -77,7 +77,13 @@ def create_kiste(db: Session, titel: str, kategorie: str = None, beschreibung: s
         db.rollback()
         return None  # Handle the case where the QR code ID is not unique
 
-# Kiste bearbeiten
+
+def get_kiste(db: Session, kiste_id: int):
+    return db.query(models.Kiste).filter(models.Kiste.id == kiste_id).first()
+
+def get_kiste_by_qr_code(db: Session, qr_code_id: str):
+    return db.query(models.Kiste).filter(models.Kiste.qr_code_id == qr_code_id).first()
+
 def update_kiste(db: Session, kiste_id: int, data: schemas.KisteUpdate):
     db_kiste = db.query(models.Kiste).filter(models.Kiste.id == kiste_id).first()
     if not db_kiste:
@@ -98,8 +104,6 @@ def update_kiste(db: Session, kiste_id: int, data: schemas.KisteUpdate):
     db.refresh(db_kiste)
     return db_kiste
 
-def get_kiste_by_qr_code(db: Session, qr_code_id: str):
-    return db.query(models.Kiste).filter(models.Kiste.qr_code_id == qr_code_id).first()
 
 def get_all_kisten(db: Session):
     return db.query(models.Kiste).all()

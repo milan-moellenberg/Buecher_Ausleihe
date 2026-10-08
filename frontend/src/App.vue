@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container" :class="{ 'admin-mode': showAdmin }">
     <header class="app-header no-print">
       <h1>📚 Bücherkisten-Ausleihe</h1>
       <Button 
@@ -375,16 +375,23 @@ function formatDatum(isoString) {
 
 <style scoped>
 .app-container {
-  max-width: 600px;
+  max-width: 600px;  /* für mobilgeräte */
+  width: 95%;  /*eventuell 100% für größere Bildschirme */
   margin: 0 auto;
   padding: 1rem;
   font-family: system-ui, -apple-system, sans-serif;
+  transition: max-width 0.3s ease;
+}
+/* Wenn Admin-Bereich aktiv ist, die Hülle der App aufweiten */
+.app-container.admin-mode {
+  max-width: 1400px;
 }
 
 .app-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 2rem;
   margin-bottom: 1.5rem;
 }
 

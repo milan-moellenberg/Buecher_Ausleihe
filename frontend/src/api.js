@@ -28,8 +28,10 @@ export default {
   updateKiste(kisteId, data, password) {
     return api.put(`/admin/kisten/${kisteId}?password=${encodeURIComponent(password)}`, data)
   },
-  regenerateQRCodes(password) {
-    return api.post(`/admin/kisten/regenerate-qrcodes?password=${encodeURIComponent(password)}`)
+  regenerateQRCodes(password, kistenIds = []) {
+    return api.post(`/admin/kisten/regenerate-qrcodes?password=${encodeURIComponent(password)}`,{
+      kisten_ids: kistenIds
+    })
   },
 
   // --- Lehrkräfte ---
